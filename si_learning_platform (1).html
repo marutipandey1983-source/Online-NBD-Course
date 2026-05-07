@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SingleInterface Learning — Digital Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #0E0071;
+    --secondary: #0070FC;
+    --bg: #F2F8FF;
+    --white: #FFFFFF;
+    --dark: #323232;
+    --grey: #5F6368;
+    --green: #00C158;
+    --orange: #FFAA00;
+    --red: #E50D0D;
+    --sidebar-w: 300px;
+    --header-h: 68px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: auto; }
+  body { font-family: 'Titillium Web', Arial, sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--header-h);
+    background: var(--white);
+    border-bottom: 2px solid #e2edf8;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    box-shadow: 0 2px 16px rgba(14,0,113,0.07);
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; }
+  .logo-wrap img { height: 38px; }
+  .course-label {
+    font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--primary); background: #EEF1FF; border-radius: 20px;
+    padding: 4px 14px; letter-spacing: 0.5px;
+  }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .progress-pill {
+    display: flex; align-items: center; gap: 8px; background: var(--bg);
+    border: 1.5px solid #cfe0f5; border-radius: 20px; padding: 6px 16px;
+    font-size: 13px; font-weight: 600; color: var(--primary); font-family: 'Prompt', sans-serif;
+  }
+  .progress-pill span { color: var(--secondary); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: var(--white); border: none; border-radius: 8px; padding: 9px 22px;
+    font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: opacity .2s, transform .1s;
+  }
+  .btn-primary:hover { opacity:.9; transform: translateY(-1px); }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
+
+  /* ── SIDEBAR ── */
+  aside {
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    background: var(--white); border-right: 1.5px solid #e2edf8;
+    position: sticky; top: var(--header-h);
+    height: calc(100vh - var(--header-h)); overflow-y: auto; padding: 24px 0 40px;
+  }
+  aside::-webkit-scrollbar { width: 4px; }
+  aside::-webkit-scrollbar-thumb { background: #cfe0f5; border-radius: 4px; }
+  .sidebar-title {
+    font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--grey); letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 0 20px 12px; border-bottom: 1px solid #eef3fb; margin-bottom: 8px;
+  }
+  .chapter-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px 20px;
+    cursor: pointer; transition: background .15s; border-left: 3px solid transparent;
+  }
+  .chapter-item:hover:not(.locked) { background: var(--bg); }
+  .chapter-item.active { background: #EEF1FF; border-left-color: var(--secondary); }
+  .chapter-item.locked { cursor: not-allowed; opacity: .55; }
+  .ch-icon {
+    width: 28px; height: 28px; border-radius: 50%; background: #EEF1FF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--primary); flex-shrink: 0;
+    margin-top: 1px; transition: all .2s;
+  }
+  .ch-icon.locked-icon { background: #e8edf5; color: var(--grey); }
+  .ch-icon.done { background: var(--green) !important; color: #fff !important; }
+  .ch-meta { flex: 1; }
+  .ch-meta strong {
+    font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--dark); display: block; line-height: 1.3;
+  }
+  .ch-meta small { font-size: 11px; color: var(--grey); margin-top: 2px; display: block; }
+  .sidebar-progress {
+    margin: 20px 20px 0; background: var(--bg); border-radius: 12px;
+    padding: 14px 16px; border: 1px solid #d6e8fb;
+  }
+  .sidebar-progress p { font-size: 12px; color: var(--grey); margin-bottom: 8px; font-weight: 600; }
+  .prog-bar-bg { background: #dce9f8; border-radius: 10px; height: 8px; overflow: hidden; }
+  .prog-bar-fill {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--secondary), var(--green));
+    transition: width .6s ease; width: 0%;
+  }
+  .prog-pct { font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 700; color: var(--primary); margin-top: 8px; }
+
+  /* ── MAIN ── */
+  main { flex: 1; padding: 40px 48px 80px; max-width: 900px; overflow-y: auto; }
+  .chapter-panel { display: none; }
+  .chapter-panel.active { display: block; animation: fadeSlide .35s ease; }
+  @keyframes fadeSlide { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── HERO ── */
+  .chapter-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a0096 45%, #003ab5 100%);
+    border-radius: 20px; padding: 44px 48px; color: #fff;
+    margin-bottom: 32px; position: relative; overflow: hidden;
+  }
+  .chapter-hero::before {
+    content:''; position: absolute; right:-50px; top:-50px;
+    width:240px; height:240px; border-radius: 50%;
+    background: rgba(0,112,252,.22);
+  }
+  .chapter-hero::after {
+    content:''; position: absolute; right:70px; bottom:-70px;
+    width:180px; height:180px; border-radius: 50%;
+    background: rgba(255,170,0,.14);
+  }
+  .ch-tag {
+    display: inline-block; background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.32); border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 14px; margin-bottom: 14px; font-family: 'Prompt', sans-serif; color: #fff;
+  }
+  .chapter-hero h1 {
+    font-family: 'Prompt', sans-serif; font-size: 32px; font-weight: 800;
+    line-height: 1.2; margin-bottom: 12px; color: #fff;
+  }
+  .chapter-hero > p { font-size: 15px; opacity:.88; max-width: 540px; line-height: 1.7; color: #fff; }
+  .hero-stats { display: flex; gap: 28px; margin-top: 24px; flex-wrap: wrap; }
+  .hero-stat { display: flex; align-items: center; gap: 8px; }
+  .hero-stat span { font-size: 13px; color: #fff; opacity:.9; }
+
+  /* ── OBJECTIVES ── */
+  .objectives-card {
+    background: #fff; border-radius: 14px; padding: 28px 32px;
+    margin-bottom: 28px; border: 1.5px solid #dce9f8;
+    box-shadow: 0 2px 12px rgba(14,0,113,0.04);
+  }
+  .objectives-card h3 {
+    font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 700;
+    color: var(--primary); margin-bottom: 16px;
+  }
+  .obj-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .obj-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--dark); line-height: 1.5;
+  }
+  .obj-list li::before { content:'✓'; color: var(--green); font-weight:700; font-size:15px; flex-shrink:0; margin-top:1px; }
+
+  /* ── SECTION CARD ── */
+  .section {
+    background: #fff; border-radius: 14px; padding: 28px 32px;
+    margin-bottom: 24px; border: 1.5px solid #dce9f8;
+    box-shadow: 0 2px 10px rgba(14,0,113,0.03);
+  }
+  .section h2 {
+    font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 700;
+    color: var(--primary); margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--bg);
+  }
+  .section h3 {
+    font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 600;
+    color: var(--dark); margin: 22px 0 10px;
+  }
+  .section h4 {
+    font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700;
+    color: var(--primary); margin: 16px 0 8px;
+  }
+  /* CRITICAL FIX: p inside section defaults to dark, but we override inside dark-bg containers */
+  .section p { font-size: 15px; color: var(--dark); line-height: 1.78; margin-bottom: 12px; }
+  .section p:last-child { margin-bottom: 0; }
+
+  /* ── STAT CARDS — force white text always ── */
+  .stat-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 18px 0; }
+  .stat-card {
+    background: linear-gradient(135deg, var(--primary), #1600b0);
+    border-radius: 14px; padding: 22px 18px; text-align: center;
+    color: #fff !important;
+  }
+  .stat-card * { color: #fff !important; }
+  .stat-card .num {
+    font-family: 'Prompt', sans-serif; font-size: 30px; font-weight: 800;
+    color: var(--orange) !important; display: block; margin-bottom: 6px;
+  }
+  .stat-card p { font-size: 13px; opacity:.9; margin: 0; line-height: 1.45; color: #fff !important; }
+
+  /* ── COMPARE TABLE ── */
+  .compare-table { width:100%; border-collapse: collapse; margin: 18px 0; border-radius: 12px; overflow: hidden; }
+  .compare-table th {
+    background: var(--primary); color: #fff;
+    font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 13px 16px; text-align: left;
+  }
+  .compare-table td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #eef3fb; color: var(--dark); }
+  .compare-table tr:nth-child(even) td { background: var(--bg); }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ── CLUE CARD ── */
+  .clue-card {
+    background: linear-gradient(135deg, #fffbe6, #fff8d6);
+    border: 1.5px solid var(--orange); border-radius: 14px;
+    padding: 18px 22px; margin: 20px 0;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .clue-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+  .clue-card strong {
+    font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700;
+    color: #7a5000; display: block; margin-bottom: 5px;
+  }
+  .clue-card p { font-size: 13.5px; color: #5a3c00; margin: 0; line-height: 1.65; }
+
+  /* ── INFO CARD ── */
+  .info-card {
+    background: #e8f3ff; border-left: 4px solid var(--secondary);
+    border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 16px 0;
+    font-size: 14px; line-height: 1.7; color: var(--dark);
+  }
+  .info-card strong { color: var(--primary); }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box {
+    background: #f0fdf4; border: 1.5px solid #a7e3be;
+    border-radius: 12px; padding: 18px 20px; margin: 14px 0;
+    font-size: 14px; line-height: 1.7; color: var(--dark);
+  }
+  .example-box strong {
+    color: #00613d; font-family: 'Prompt', sans-serif;
+    font-size: 12px; text-transform: uppercase; letter-spacing: .8px;
+    display: block; margin-bottom: 8px;
+  }
+
+  /* ── PILL GRID ── */
+  .pill-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+  .pill {
+    background: #EEF1FF; border: 1.5px solid #c8d2f8; border-radius: 20px;
+    padding: 7px 18px; font-size: 13px; font-weight: 600; color: var(--primary);
+    font-family: 'Prompt', sans-serif; display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── CUSTOM LIST ── */
+  .custom-list { list-style: none; margin: 10px 0; }
+  .custom-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; font-size: 14px; color: var(--dark); line-height: 1.65;
+    border-bottom: 1px dashed #eef3fb;
+  }
+  .custom-list li:last-child { border-bottom: none; }
+  .custom-list li .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--secondary); flex-shrink:0; margin-top:6px; }
+
+  /* ── PROCESS STEPS ── */
+  .process-steps { display: flex; flex-direction: column; gap: 0; margin: 18px 0; }
+  .process-step { display: flex; align-items: flex-start; gap: 16px; position: relative; padding-bottom: 22px; }
+  .process-step:last-child { padding-bottom: 0; }
+  .ps-num {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: #fff; font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink:0; z-index:1;
+  }
+  .ps-line { position: absolute; left:19px; top:38px; bottom:0; width:2px; background: #dce9f8; }
+  .process-step:last-child .ps-line { display:none; }
+  .ps-content { padding-top: 6px; }
+  .ps-content strong { font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px; }
+  .ps-content p { font-size: 14px; color: var(--grey); margin: 0; line-height: 1.65; }
+
+  /* ── TWO COLUMN ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .col-card { border-radius: 12px; padding: 18px 20px; }
+  .col-card.good { background: #f0fdf4; border: 1.5px solid #a7e3be; }
+  .col-card.bad { background: #fff3f3; border: 1.5px solid #f5a0a0; }
+  .col-card.blue { background: #e8f3ff; border: 1.5px solid #90c9f9; }
+  .col-card h4 { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .col-card.good h4 { color: #00613d; }
+  .col-card.bad h4 { color: #b00020; }
+  .col-card.blue h4 { color: var(--secondary); }
+  .col-card ul { list-style: none; }
+  .col-card ul li { font-size: 13.5px; padding: 5px 0; color: var(--dark); line-height: 1.5; }
+  .col-card.good ul li::before { content:'✓ '; color: var(--green); font-weight:700; }
+  .col-card.bad ul li::before { content:'✗ '; color: var(--red); font-weight:700; }
+  .col-card.blue ul li::before { content:'→ '; color: var(--secondary); font-weight:700; }
+
+  /* ── TABS ── */
+  .tab-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tab-btn {
+    padding: 8px 18px; border-radius: 8px; border: 1.5px solid #d0dff5;
+    background: var(--white); font-family: 'Prompt', sans-serif;
+    font-size: 13px; font-weight: 600; color: var(--grey); cursor: pointer; transition: all .15s;
+  }
+  .tab-btn:hover { border-color: var(--secondary); color: var(--secondary); }
+  .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; animation: fadeSlide .25s; }
+
+  /* ── INTENT CARDS ── */
+  .intent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .intent-card { border-radius: 12px; padding: 18px 20px; border: 1.5px solid; }
+  .intent-card h4 { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+  .intent-card p { font-size: 13px; margin: 0; line-height: 1.55; color: var(--dark); }
+  .intent-card em { color: var(--grey); font-size: 12px; }
+  .intent-card.info { border-color: #90c9f9; background: #e8f3ff; }
+  .intent-card.info h4 { color: var(--secondary); }
+  .intent-card.trans { border-color: #a7e3be; background: #f0fdf4; }
+  .intent-card.trans h4 { color: #00613d; }
+  .intent-card.comm { border-color: #f5c6a0; background: #fff8f2; }
+  .intent-card.comm h4 { color: #b05000; }
+  .intent-card.nav { border-color: #c5b8f5; background: #f5f0ff; }
+  .intent-card.nav h4 { color: #5b21b6; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #1a1a2e; border-radius: 10px; padding: 16px 20px;
+    font-family: 'Courier New', monospace; font-size: 13px; color: #a9d6f5;
+    margin: 12px 0; overflow-x: auto; line-height: 1.6;
+  }
+  .code-block .tag { color: #f2a365; }
+  .code-block .attr { color: #a9d6f5; }
+  .code-block .val { color: #b5f0c1; }
+  .code-block .com { color: #6a8ca0; font-style: italic; }
+
+  /* ── SCHEMA PILLS ── */
+  .schema-pill-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+  .schema-pill {
+    background: #1a1a2e; color: #a9d6f5; border-radius: 8px;
+    padding: 8px 16px; font-size: 13px; font-family: monospace;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── SPEED BARS ── */
+  .speed-bar-container { margin: 16px 0; }
+  .speed-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .speed-label { width: 110px; font-size: 13px; color: var(--dark); font-weight: 600; flex-shrink:0; }
+  .speed-bar-bg { flex:1; background: #e8edf5; border-radius: 8px; height: 14px; overflow: hidden; }
+  .speed-bar { height: 100%; border-radius: 8px; transition: width 1s ease; }
+  .speed-note { font-size: 12px; color: var(--grey); width: 80px; text-align: right; flex-shrink:0; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: linear-gradient(135deg, var(--primary), #1600b0);
+    border-radius: 14px; padding: 22px 26px; margin: 18px 0;
+    color: #fff !important;
+  }
+  .highlight-box * { color: #fff !important; }
+  .highlight-box h4 { font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .highlight-box p { font-size: 14px; opacity: .9; line-height: 1.65; margin: 0; }
+
+  /* ── CALLOUT BOX ── */
+  .callout {
+    background: #fff3cd; border: 1.5px solid var(--orange); border-radius: 12px;
+    padding: 16px 20px; margin: 16px 0; font-size: 14px; line-height: 1.7; color: #5a3c00;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .callout .ci { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .callout strong { color: #7a5000; font-family: 'Prompt', sans-serif; }
+
+  /* ── SEO CHECKLIST ── */
+  .seo-checklist { list-style: none; margin: 14px 0; }
+  .seo-checklist li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid #eef3fb;
+    font-size: 14px; color: var(--dark); line-height: 1.6;
+  }
+  .seo-checklist li:last-child { border-bottom: none; }
+  .seo-checklist .ck {
+    width: 22px; height: 22px; border-radius: 6px; background: #EEF1FF;
+    border: 1.5px solid #c8d2f8; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--primary); font-weight: 700;
+  }
+
+  /* ── AI EXAMPLES ── */
+  .ai-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 16px 0; }
+  .ai-card {
+    background: linear-gradient(160deg, #f3f0ff, #e8f0fe);
+    border: 1.5px solid #c5b8f5; border-radius: 12px;
+    padding: 18px 16px; text-align: center;
+  }
+  .ai-card .ai-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
+  .ai-card strong { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; color: #3d1a8a; display: block; margin-bottom: 5px; }
+  .ai-card p { font-size: 12px; color: #5b4080; margin: 0; line-height: 1.5; }
+
+  /* ── QUIZ ── */
+  .quiz-section {
+    background: #fff; border-radius: 18px; padding: 34px 38px;
+    margin-top: 32px; border: 2px solid var(--secondary);
+    box-shadow: 0 4px 24px rgba(0,112,252,.09);
+  }
+  .quiz-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid var(--bg);
+  }
+  .quiz-badge {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: #fff; border-radius: 50%; width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink:0;
+  }
+  .quiz-header h2 { font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 800; color: var(--primary); }
+  .quiz-header p { font-size: 13px; color: var(--grey); margin-top:3px; }
+
+  .quiz-question {
+    margin-bottom: 28px; padding: 22px 24px;
+    background: var(--bg); border-radius: 14px; border: 1.5px solid #dce9f8;
+  }
+  .q-num { font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .q-text { font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 600; color: var(--dark); margin-bottom: 16px; line-height: 1.45; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: var(--white); border: 1.5px solid #d0dff5; border-radius: 10px;
+    cursor: pointer; transition: all .15s; font-size: 14px; color: var(--dark); line-height: 1.4;
+  }
+  .option:hover:not(.disabled) { border-color: var(--secondary); background: #eef6ff; }
+  .option.selected { border-color: var(--secondary); background: #e0efff; }
+  .option.correct { border-color: var(--green); background: #f0fdf4; color: #00613d; font-weight: 600; }
+  .option.wrong { border-color: var(--red); background: #fff3f3; color: #b00020; font-weight: 600; }
+  .option.disabled { cursor: default; }
+  .opt-radio {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c0cfe8;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s;
+  }
+  .option.selected .opt-radio { border-color: var(--secondary); background: var(--secondary); }
+  .option.selected .opt-radio::after { content:''; width:8px; height:8px; border-radius:50%; background:#fff; }
+  .option.correct .opt-radio { border-color: var(--green); background: var(--green); }
+  .option.correct .opt-radio::after { content:'✓'; color:#fff; font-size:11px; font-weight:700; }
+  .option.wrong .opt-radio { border-color: var(--red); background: var(--red); }
+  .option.wrong .opt-radio::after { content:'✗'; color:#fff; font-size:11px; font-weight:700; }
+  .feedback { margin-top: 12px; padding: 11px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #00613d; border: 1px solid #a7e3be; display: block; }
+  .feedback.wrong { background: #fff3f3; color: #b00020; border: 1px solid #f5a0a0; display: block; }
+
+  .quiz-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 20px; border-top: 2px solid var(--bg); }
+  .submit-quiz {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: #fff; border: none; border-radius: 10px; padding: 13px 38px;
+    font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all .2s;
+  }
+  .submit-quiz:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,112,252,.32); }
+  .submit-quiz:disabled { opacity:.45; cursor: not-allowed; }
+  .quiz-score { font-family: 'Prompt', sans-serif; font-size: 22px; font-weight: 800; color: var(--primary); display: none; }
+
+  /* ── RESULT BANNER ── */
+  .result-banner { display:none; border-radius: 14px; padding: 26px 30px; margin-top: 24px; text-align: center; }
+  .result-banner.pass { background: linear-gradient(135deg, #e6fdf1, #f0fdf4); border: 2px solid var(--green); }
+  .result-banner.fail { background: linear-gradient(135deg, #fff9f0, #fff5e6); border: 2px solid var(--orange); }
+  .result-banner h3 { font-family: 'Prompt', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .result-banner.pass h3 { color: #00613d; }
+  .result-banner.fail h3 { color: #7a4500; }
+  .result-banner p { font-size: 14px; color: var(--grey); margin-bottom: 18px; }
+  .unlock-btn {
+    background: linear-gradient(135deg, var(--green), #009044);
+    color: #fff; border: none; border-radius: 10px; padding: 13px 34px;
+    font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,193,88,.32); }
+  .retry-btn {
+    background: var(--white); color: var(--orange); border: 2px solid var(--orange);
+    border-radius: 10px; padding: 12px 30px;
+    font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .retry-btn:hover { background: var(--orange); color: #fff; }
+
+  /* ── LOCKED OVERLAY ── */
+  .locked-chapter {
+    background: var(--white); border-radius: 18px; border: 2px dashed #cdd7e8;
+    padding: 70px 40px; text-align: center;
+  }
+  .locked-chapter .lock-big { font-size: 64px; margin-bottom: 18px; display:block; }
+  .locked-chapter h2 { font-family: 'Prompt', sans-serif; font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 12px; }
+  .locked-chapter p { font-size: 15px; color: var(--grey); max-width: 440px; margin: 0 auto 24px; line-height: 1.65; }
+  .locked-chapter .req-badge {
+    display: inline-flex; align-items: center; gap: 8px; background: #fff3e6;
+    border: 1.5px solid var(--orange); border-radius: 20px;
+    padding: 9px 22px; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; color: #7a4500;
+  }
+
+  /* ── COMPLETION ── */
+  .completion-panel {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a00c8 50%, var(--secondary) 100%);
+    border-radius: 22px; padding: 70px 40px; text-align: center; color: #fff; display: none;
+  }
+  .completion-panel h1 { font-family: 'Prompt', sans-serif; font-size: 38px; font-weight: 800; margin-bottom: 16px; }
+  .completion-panel > p { font-size: 16px; opacity:.88; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+  .cert-badge {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: rgba(255,255,255,.13); border: 2px solid rgba(255,255,255,.3);
+    border-radius: 18px; padding: 22px 36px; margin-bottom: 32px;
+  }
+  .cert-badge .trophy { font-size: 56px; }
+  .cert-badge span { font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700; opacity:.88; margin-top: 10px; color: #fff; }
+  .cert-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .cert-btn {
+    background: rgba(255,255,255,.18); color: #fff; border: 2px solid rgba(255,255,255,.4);
+    border-radius: 10px; padding: 13px 28px;
+    font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .2s;
+  }
+  .cert-btn:hover { background: rgba(255,255,255,.3); }
+  .cert-btn.primary { background: var(--orange); border-color: var(--orange); color: #1a0000; }
+  .cert-btn.primary:hover { background: #e69900; }
+
+  /* ── KEYWORD DEMO ── */
+  .kw-demo { background: var(--bg); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .kw-demo .search-bar {
+    background: #fff; border: 1.5px solid #dce9f8; border-radius: 8px;
+    padding: 12px 16px; font-size: 14px; color: var(--dark); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .kw-type { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .kw-badge {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; font-family: 'Prompt', sans-serif;
+  }
+  .kw-badge.short { background: #fff3f3; color: #b00020; border: 1px solid #f5a0a0; }
+  .kw-badge.long { background: #f0fdf4; color: #00613d; border: 1px solid #a7e3be; }
+
+  /* ── LOCAL SEO MAP ── */
+  .local-seo-card {
+    background: linear-gradient(135deg, #f0fdf4, #e6fdf1);
+    border: 1.5px solid #a7e3be; border-radius: 14px;
+    padding: 22px 24px; margin: 16px 0;
+  }
+  .local-seo-card h4 { font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700; color: #00613d; margin-bottom: 12px; }
+  .local-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .local-step {
+    background: #fff; border-radius: 10px; padding: 12px 14px;
+    border: 1px solid #c8e8d4; font-size: 13px; color: var(--dark); line-height: 1.5;
+  }
+  .local-step strong { color: #00613d; font-family: 'Prompt', sans-serif; display: block; margin-bottom: 3px; }
+
+  /* ── TECH SEO GRID ── */
+  .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .tech-card {
+    background: #fff; border-radius: 12px; padding: 18px 20px;
+    border: 1.5px solid #dce9f8; box-shadow: 0 2px 8px rgba(14,0,113,0.04);
+  }
+  .tech-card .tc-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .tech-card h4 { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .tech-card p { font-size: 13px; color: var(--grey); margin: 0; line-height: 1.55; }
+
+  /* ── ON PAGE ELEMENTS ── */
+  .onpage-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .onpage-item {
+    background: var(--bg); border: 1.5px solid #dce9f8; border-radius: 12px;
+    padding: 16px 16px; text-align: center;
+  }
+  .onpage-item .oi-icon { font-size: 26px; margin-bottom: 8px; display: block; }
+  .onpage-item h5 { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .onpage-item p { font-size: 12px; color: var(--grey); margin: 0; line-height: 1.45; }
+
+  @media (max-width: 768px) {
+    .layout { flex-direction: column; }
+    aside { width: 100%; position: relative; height: auto; }
+    main { padding: 24px 20px 60px; max-width: 100%; }
+    .obj-list, .stat-cards, .two-col, .intent-grid, .ai-grid, .tech-grid, .local-steps, .onpage-grid { grid-template-columns: 1fr; }
+    header { padding: 0 16px; }
+    .chapter-hero { padding: 28px 24px; }
+    .section { padding: 22px 20px; }
+    .quiz-section { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="/mnt/user-data/uploads/Logo_Regular.png" alt="SingleInterface"/>
+    <span class="course-label">Learning Academy</span>
+  </div>
+  <div class="header-right">
+    <div class="progress-pill">📚 Progress: <span id="header-pct">0%</span></div>
+    <button class="btn-primary">My Courses</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-title">Course Chapters</div>
+    <div class="chapter-item active" id="nav-0" onclick="showChapter(0)">
+      <div class="ch-icon" id="icon-0">1</div>
+      <div class="ch-meta">
+        <strong>Intro to Digital Marketing</strong>
+        <small>5 sections · 5-question quiz</small>
+      </div>
+    </div>
+    <div class="chapter-item locked" id="nav-1" onclick="tryChapter(1)">
+      <div class="ch-icon locked-icon" id="icon-1">🔒</div>
+      <div class="ch-meta">
+        <strong>Search Engines & SEO</strong>
+        <small>9 sections · 5-question quiz</small>
+      </div>
+    </div>
+    <div style="height:1px;background:#eef3fb;margin:12px 0;"></div>
+    <div class="sidebar-progress">
+      <p>🎯 Overall Progress</p>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="sidebar-bar"></div></div>
+      <div class="prog-pct" id="sidebar-pct">0%</div>
+    </div>
+  </aside>
+
+  <main id="main-scroll">
+
+    <!-- ═══════════════════════════ CHAPTER 1 ═══════════════════════════ -->
+    <div class="chapter-panel active" id="chapter-0">
+      <div class="chapter-hero">
+        <div class="ch-tag">Chapter 1 of 2</div>
+        <h1>Introduction to<br/>Digital Marketing</h1>
+        <p>Discover how the internet transformed how businesses find customers — and how customers find businesses.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><span>📖</span><span>5 Sections</span></div>
+          <div class="hero-stat"><span>⏱</span><span>~20 mins</span></div>
+          <div class="hero-stat"><span>🎯</span><span>5-Question Quiz</span></div>
+        </div>
+      </div>
+
+      <div class="objectives-card">
+        <h3>🎯 What you'll learn in this chapter</h3>
+        <ul class="obj-list">
+          <li>What digital marketing is and why it matters</li>
+          <li>How businesses use digital channels to grow</li>
+          <li>Traditional vs. digital marketing compared</li>
+          <li>The 6 main components of digital marketing</li>
+          <li>How AI is revolutionising marketing today</li>
+          <li>Why consumer behaviour has shifted online</li>
+        </ul>
+      </div>
+
+      <!-- Section 1.1 -->
+      <div class="section">
+        <h2>📱 1.1 What is Digital Marketing?</h2>
+        <p>Digital Marketing is the process of <strong>promoting products, services, or brands</strong> using online platforms and digital technologies. In other words — it is how modern businesses reach their customers where they spend most of their time: <strong>the internet</strong>.</p>
+        <p>Think of it this way: a small bakery putting up a billboard outside their shop is traditional marketing. But when they post gorgeous cake photos on Instagram and receive 300 orders through DMs overnight — that is digital marketing in action.</p>
+
+        <div class="clue-card">
+          <span class="clue-icon">💡</span>
+          <div>
+            <strong>Simple Way to Remember</strong>
+            <p>Digital marketing = getting your message in front of the right people, at the right time, on the right screen. Whether it's Google, YouTube, Instagram or their email inbox — if it's online, it's digital marketing.</p>
+          </div>
+        </div>
+
+        <h3>Digital Marketing includes all these channels:</h3>
+        <div class="pill-grid">
+          <span class="pill">🔍 Google Search</span>
+          <span class="pill">📘 Social Media</span>
+          <span class="pill">🌐 Websites &amp; Blogs</span>
+          <span class="pill">📱 Mobile Apps</span>
+          <span class="pill">📧 Email</span>
+          <span class="pill">🎯 Online Ads</span>
+          <span class="pill">▶️ YouTube Videos</span>
+          <span class="pill">📲 WhatsApp &amp; Chat</span>
+        </div>
+      </div>
+
+      <!-- Section: Traditional vs Digital -->
+      <div class="section">
+        <h2>⚡ 1.2 Traditional vs. Digital Marketing</h2>
+        <p>The world has shifted dramatically over the last decade. Half of human attention has moved from the TV room and newspaper stands to smartphone screens. Here's how traditional and digital marketing compare:</p>
+        <table class="compare-table">
+          <thead>
+            <tr><th>Feature</th><th>📰 Traditional Marketing</th><th>💻 Digital Marketing</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Examples</strong></td><td>TV ads, Billboards, Newspapers</td><td>Google Ads, Instagram, Email</td></tr>
+            <tr><td><strong>Cost</strong></td><td>Very high — lakhs or crores</td><td>Start from ₹500/day</td></tr>
+            <tr><td><strong>Targeting</strong></td><td>Broad — everyone sees the same ad</td><td>Laser-precise — age, location, interest</td></tr>
+            <tr><td><strong>Measurement</strong></td><td>Hard to measure actual ROI</td><td>Real-time clicks, conversions, revenue</td></tr>
+            <tr><td><strong>Speed</strong></td><td>Weeks to design, print, distribute</td><td>Launch an ad campaign in minutes</td></tr>
+            <tr><td><strong>Interaction</strong></td><td>One-way — brand talks, people listen</td><td>Two-way — customers comment, share, reply</td></tr>
+            <tr><td><strong>Reach</strong></td><td>Limited to local or national geography</td><td>Reach customers anywhere in the world</td></tr>
+          </tbody>
+        </table>
+        <div class="info-card">
+          📌 <strong>Real Example:</strong> A full-page ad in a national newspaper costs ₹3–10 lakh for a single day and reaches everyone — even people who have zero interest in your product. A Google Ad can run for ₹500/day and show only to people who <em>searched for exactly</em> what you're selling, in your city, right now.
+        </div>
+      </div>
+
+      <!-- Section: Why Important -->
+      <div class="section">
+        <h2>🌍 1.3 Why Digital Marketing is Important</h2>
+        <p>Consumer behaviour has fundamentally changed. Your customers are online — they research, compare, and buy online. If your business isn't visible there, you're invisible to them. Full stop.</p>
+
+        <div class="stat-cards">
+          <div class="stat-card">
+            <span class="num">5B+</span>
+            <p>People globally use the internet every single day</p>
+          </div>
+          <div class="stat-card">
+            <span class="num">8.5B</span>
+            <p>Google searches happen every day — that's 99,000 every second</p>
+          </div>
+          <div class="stat-card">
+            <span class="num">70%+</span>
+            <p>Consumers research a product online before making a purchase</p>
+          </div>
+        </div>
+
+        <div class="clue-card">
+          <span class="clue-icon">🛍️</span>
+          <div>
+            <strong>Think About Your Own Behaviour</strong>
+            <p>Before buying a smartphone, do you check reviews on YouTube? Before visiting a restaurant, do you look at Zomato ratings? Before joining a course, do you Google it first? That's exactly why every business needs digital marketing — your customer is already searching online, and if they don't find you, they'll find your competitor.</p>
+          </div>
+        </div>
+
+        <h3>The shift in consumer behaviour:</h3>
+        <ul class="custom-list">
+          <li><span class="dot"></span>People now spend an average of <strong>6+ hours daily</strong> on the internet across devices</li>
+          <li><span class="dot"></span>Over <strong>80% of purchase decisions</strong> start with an online search</li>
+          <li><span class="dot"></span><strong>67% of millennials</strong> prefer to shop online rather than visit a physical store</li>
+          <li><span class="dot"></span>Businesses with a strong online presence grow <strong>40% faster</strong> than those without</li>
+          <li><span class="dot"></span>During Covid-19, businesses with digital marketing survived — those without it did not</li>
+        </ul>
+      </div>
+
+      <!-- Section: Components -->
+      <div class="section">
+        <h2>🧩 1.4 The 6 Main Components of Digital Marketing</h2>
+        <p>Digital marketing isn't just one thing — it's an ecosystem of 6 major channels, each serving a unique role. Think of them as departments in a marketing team, each with a specific job:</p>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab(this,'comp-tabs','comp-seo')">🔍 SEO</button>
+          <button class="tab-btn" onclick="switchTab(this,'comp-tabs','comp-social')">📲 Social</button>
+          <button class="tab-btn" onclick="switchTab(this,'comp-tabs','comp-content')">✍️ Content</button>
+          <button class="tab-btn" onclick="switchTab(this,'comp-tabs','comp-paid')">💰 Paid Ads</button>
+          <button class="tab-btn" onclick="switchTab(this,'comp-tabs','comp-email')">📧 Email</button>
+          <button class="tab-btn" onclick="switchTab(this,'comp-tabs','comp-analytics')">📊 Analytics</button>
+        </div>
+        <div id="comp-tabs">
+          <div class="tab-pane active" id="comp-seo">
+            <div class="example-box">
+              <strong>🔍 1. Search Engine Optimisation (SEO)</strong>
+              The art of making your website appear on page 1 of Google — for free. No ads, just smart optimisation.<br/><br/>
+              <strong>How it works:</strong> You optimise your website content, structure, and authority so Google sees it as the best answer to a user's search.<br/><br/>
+              <strong>Example:</strong> A restaurant in Hyderabad optimises its website so that when someone searches "best biryani in Hyderabad," their restaurant appears at the top of Google — without paying for ads.
+            </div>
+          </div>
+          <div class="tab-pane" id="comp-social">
+            <div class="example-box">
+              <strong>📲 2. Social Media Marketing</strong>
+              Growing your brand awareness, engagement, and sales through platforms where your audience already spends time.<br/><br/>
+              <strong>Key platforms:</strong> Instagram, LinkedIn, Facebook, Twitter/X, YouTube, Snapchat, Pinterest.<br/><br/>
+              <strong>Example:</strong> Zomato's witty tweets regularly go viral, generating millions of impressions — and bringing massive brand awareness — all for free. Meanwhile, a D2C skincare brand runs targeted Instagram ads reaching women aged 20–35 interested in organic beauty products.
+            </div>
+          </div>
+          <div class="tab-pane" id="comp-content">
+            <div class="example-box">
+              <strong>✍️ 3. Content Marketing</strong>
+              Creating valuable blogs, videos, podcasts, and guides that attract, educate, and convert your ideal audience — without hard selling.<br/><br/>
+              <strong>The philosophy:</strong> Instead of interrupting people with ads, you attract them by being genuinely helpful.<br/><br/>
+              <strong>Example:</strong> HubSpot publishes thousands of free marketing guides and templates, attracting millions of potential customers who then trust them enough to buy their paid software.
+            </div>
+          </div>
+          <div class="tab-pane" id="comp-paid">
+            <div class="example-box">
+              <strong>💰 4. Paid Advertising (PPC)</strong>
+              Running paid ads on Google, Meta, YouTube, or LinkedIn to reach your audience instantly and drive immediate results.<br/><br/>
+              <strong>Key formats:</strong> Search ads (appear when someone searches), display ads (banner ads on websites), video ads (YouTube), social ads (Meta, LinkedIn).<br/><br/>
+              <strong>Example:</strong> A startup spends ₹10,000 on Google Ads for "project management software" and generates ₹1,50,000 in subscription revenue — a 15x return on investment.
+            </div>
+          </div>
+          <div class="tab-pane" id="comp-email">
+            <div class="example-box">
+              <strong>📧 5. Email Marketing</strong>
+              Sending highly targeted, personalised emails to subscribers to nurture relationships, share offers, and drive repeat purchases. It consistently delivers the highest ROI of any digital marketing channel.<br/><br/>
+              <strong>Average ROI:</strong> For every ₹1 spent on email marketing, brands earn ₹36 back (3,600% ROI).<br/><br/>
+              <strong>Example:</strong> Flipkart sends personalised sale alerts based on your browsing history — "The shoes you viewed are now 40% off!" — bringing customers back to complete their purchase.
+            </div>
+          </div>
+          <div class="tab-pane" id="comp-analytics">
+            <div class="example-box">
+              <strong>📊 6. Analytics &amp; Reporting</strong>
+              Measuring everything — website traffic, conversion rates, ad performance, ROI — so you can continuously improve your strategy based on data, not guesswork.<br/><br/>
+              <strong>Key tools:</strong> Google Analytics, Google Search Console, Meta Ads Manager, HubSpot.<br/><br/>
+              <strong>Example:</strong> A company uses analytics to discover that 85% of their website visitors leave within 3 seconds on mobile. They fix the page loading speed and immediately see a 60% increase in conversions.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: AI -->
+      <div class="section">
+        <h2>🤖 1.5 AI in Digital Marketing</h2>
+        <p>Artificial Intelligence is no longer science fiction — it is already powering the marketing tools you use every single day, making campaigns smarter, faster, and more personalised than ever before.</p>
+
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="ps-num">1</div>
+            <div class="ps-line"></div>
+            <div class="ps-content">
+              <strong>Content Creation &amp; Copywriting</strong>
+              <p>AI tools like ChatGPT, Jasper, and Copy.ai can draft product descriptions, social posts, email subject lines, and full blog articles in seconds — what used to take a copywriter hours. Brands now use AI to produce 10x more content at a fraction of the cost.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="ps-num">2</div>
+            <div class="ps-line"></div>
+            <div class="ps-content">
+              <strong>Data Analysis &amp; Insights</strong>
+              <p>AI analyses millions of data points — purchase history, browsing behaviour, click patterns, heatmaps — and surfaces insights that would take a human analyst months to find. It tells marketers not just <em>what</em> happened, but <em>why</em> it happened.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="ps-num">3</div>
+            <div class="ps-line"></div>
+            <div class="ps-content">
+              <strong>Hyper-personalisation</strong>
+              <p>Every time Netflix says "Because you watched…" or Amazon shows "Customers also bought…" — that's AI building a unique experience for each of their 300+ million users. The same technology now helps even small businesses personalise their website content and emails for each visitor.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="ps-num">4</div>
+            <div class="ps-line"></div>
+            <div class="ps-content">
+              <strong>Predictive Customer Behaviour</strong>
+              <p>AI can predict which customers are likely to churn, which are ready to upgrade, and which marketing message will convert best for each individual — before the customer even knows it themselves. This is called predictive analytics.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-grid">
+          <div class="ai-card">
+            <span class="ai-emoji">🎬</span>
+            <strong>Netflix</strong>
+            <p>Recommends shows using AI — 80% of what people watch comes from AI recommendations</p>
+          </div>
+          <div class="ai-card">
+            <span class="ai-emoji">🛒</span>
+            <strong>Amazon</strong>
+            <p>"Customers also bought" AI engine drives 35% of Amazon's total revenue</p>
+          </div>
+          <div class="ai-card">
+            <span class="ai-emoji">🤖</span>
+            <strong>ChatGPT</strong>
+            <p>Marketers use it to generate ad copy, blog posts, and social content in seconds</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="ci">🎯</span>
+          <div>
+            <strong>You've Already Experienced AI Marketing</strong><br/>
+            Every time YouTube perfectly auto-plays the next video you didn't know you wanted, or Swiggy shows you exactly the cuisine you're craving at 8 PM, or you see an ad for something you just searched 5 minutes ago — AI is working behind the scenes, making your experience feel magical.
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ 1 -->
+      <div class="quiz-section" id="quiz-0">
+        <div class="quiz-header">
+          <div class="quiz-badge">📝</div>
+          <div>
+            <h2>Chapter 1 Quiz — Unlock Chapter 2</h2>
+            <p>Answer all 5 questions. Score 4 or 5 out of 5 to unlock the next chapter.</p>
+          </div>
+        </div>
+        <div class="quiz-question" id="q0-1">
+          <div class="q-num">Question 1 of 5</div>
+          <div class="q-text">Which of the following BEST describes Digital Marketing?</div>
+          <div class="options">
+            <div class="option" onclick="selectOption(this,'q0-1')"><div class="opt-radio"></div>Printing flyers and distributing them door-to-door in a neighbourhood</div>
+            <div class="option" onclick="selectOption(this,'q0-1')"><div class="opt-radio"></div>Promoting products and brands through online platforms and digital technologies</div>
+            <div class="option" onclick="selectOption(this,'q0-1')"><div class="opt-radio"></div>Setting up a physical shop and running in-store promotions</div>
+            <div class="option" onclick="selectOption(this,'q0-1')"><div class="opt-radio"></div>Hiring salespeople to cold-call potential customers</div>
+          </div>
+          <div class="feedback" id="fb-q0-1"></div>
+        </div>
+        <div class="quiz-question" id="q0-2">
+          <div class="q-num">Question 2 of 5</div>
+          <div class="q-text">How many searches does Google process every single day?</div>
+          <div class="options">
+            <div class="option" onclick="selectOption(this,'q0-2')"><div class="opt-radio"></div>Around 1 million searches</div>
+            <div class="option" onclick="selectOption(this,'q0-2')"><div class="opt-radio"></div>Around 500 million searches</div>
+            <div class="option" onclick="selectOption(this,'q0-2')"><div class="opt-radio"></div>Over 8.5 billion searches</div>
+            <div class="option" onclick="selectOption(this,'q0-2')"><div class="opt-radio"></div>About 200 billion searches</div>
+          </div>
+          <div class="feedback" id="fb-q0-2"></div>
+        </div>
+        <div class="quiz-question" id="q0-3">
+          <div class="q-num">Question 3 of 5</div>
+          <div class="q-text">Which of these is NOT one of the 6 main components of Digital Marketing?</div>
+          <div class="options">
+            <div class="option" onclick="selectOption(this,'q0-3')"><div class="opt-radio"></div>Search Engine Optimisation (SEO)</div>
+            <div class="option" onclick="selectOption(this,'q0-3')"><div class="opt-radio"></div>Billboard and Outdoor Advertising</div>
+            <div class="option" onclick="selectOption(this,'q0-3')"><div class="opt-radio"></div>Email Marketing</div>
+            <div class="option" onclick="selectOption(this,'q0-3')"><div class="opt-radio"></div>Analytics &amp; Reporting</div>
+          </div>
+          <div class="feedback" id="fb-q0-3"></div>
+        </div>
+        <div class="quiz-question" id="q0-4">
+          <div class="q-num">Question 4 of 5</div>
+          <div class="q-text">What is the KEY advantage of digital marketing over traditional marketing?</div>
+          <div class="options">
+            <div class="option" onclick="selectOption(this,'q0-4')"><div class="opt-radio"></div>Digital marketing is always 100% free of cost</div>
+            <div class="option" onclick="selectOption(this,'q0-4')"><div class="opt-radio"></div>It allows precise audience targeting and real-time performance measurement</div>
+            <div class="option" onclick="selectOption(this,'q0-4')"><div class="opt-radio"></div>It only works for large corporations with big budgets</div>
+            <div class="option" onclick="selectOption(this,'q0-4')"><div class="opt-radio"></div>It requires no internet connection or technical skills</div>
+          </div>
+          <div class="feedback" id="fb-q0-4"></div>
+        </div>
+        <div class="quiz-question" id="q0-5">
+          <div class="q-num">Question 5 of 5</div>
+          <div class="q-text">Netflix recommending shows "Because you watched…" is an example of AI doing what in digital marketing?</div>
+          <div class="options">
+            <div class="option" onclick="selectOption(this,'q0-5')"><div class="opt-radio"></div>Running paid advertising campaigns</div>
+            <div class="option" onclick="selectOption(this,'q0-5')"><div class="opt-radio"></div>Performing search engine optimisation</div>
+            <div class="option" onclick="selectOption(this,'q0-5')"><div class="opt-radio"></div>Hyper-personalisation using AI to match content to each user</div>
+            <div class="option" onclick="selectOption(this,'q0-5')"><div class="opt-radio"></div>Email marketing automation</div>
+          </div>
+          <div class="feedback" id="fb-q0-5"></div>
+        </div>
+        <div class="quiz-actions">
+          <div class="quiz-score" id="score-0"></div>
+          <button class="submit-quiz" id="submit-0" onclick="submitQuiz(0)" disabled>Submit Quiz →</button>
+        </div>
+        <div class="result-banner pass" id="result-pass-0">
+          <h3>🎉 Excellent Work!</h3>
+          <p>You've passed the Chapter 1 quiz! Chapter 2 is now unlocked. Let's dive into how search engines and SEO really work.</p>
+          <button class="unlock-btn" onclick="unlockChapter(1)">🔓 Unlock Chapter 2 →</button>
+        </div>
+        <div class="result-banner fail" id="result-fail-0">
+          <h3>📚 Almost There!</h3>
+          <p>You need at least 4 out of 5 correct to proceed. Review the chapter content above and try again — you've got this!</p>
+          <button class="retry-btn" onclick="retryQuiz(0)">🔄 Retry Quiz</button>
+        </div>
+      </div>
+    </div><!-- /chapter-0 -->
+
+
+    <!-- ═══════════════════════════ CHAPTER 2 ═══════════════════════════ -->
+    <div class="chapter-panel" id="chapter-1">
+      <div id="locked-overlay-1">
+        <div class="locked-chapter">
+          <span class="lock-big">🔒</span>
+          <h2>Chapter 2 is Locked</h2>
+          <p>Complete the Chapter 1 quiz with a score of 4 out of 5 or higher to unlock this chapter and continue your learning journey.</p>
+          <span class="req-badge">⚠️ Complete Chapter 1 Quiz First</span>
+        </div>
+      </div>
+
+      <div id="chapter-1-content" style="display:none;">
+        <div class="chapter-hero">
+          <div class="ch-tag">Chapter 2 of 2</div>
+          <h1>Search Engines &amp;<br/>SEO Fundamentals</h1>
+          <p>Learn how Google finds, reads, and ranks billions of web pages — and how to make your website climb to the very top of search results.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><span>📖</span><span>9 Sections</span></div>
+            <div class="hero-stat"><span>⏱</span><span>~35 mins</span></div>
+            <div class="hero-stat"><span>🎯</span><span>5-Question Final Quiz</span></div>
+          </div>
+        </div>
+
+        <div class="objectives-card">
+          <h3>🎯 What you'll learn in this chapter</h3>
+          <ul class="obj-list">
+            <li>What a search engine is and how it works</li>
+            <li>The 3 stages: Crawling, Indexing, Ranking</li>
+            <li>What SEO is and why it's a game-changer</li>
+            <li>Keywords — types, intent, and research</li>
+            <li>On-page SEO: title tags, meta, headings</li>
+            <li>Off-page SEO: backlinks and domain authority</li>
+            <li>Technical SEO: speed, mobile, schema</li>
+            <li>Local SEO and Google Business Profile</li>
+            <li>How to measure and track SEO success</li>
+          </ul>
+        </div>
+
+        <!-- 2.1 What is a Search Engine -->
+        <div class="section">
+          <h2>🔍 2.1 What is a Search Engine?</h2>
+          <p>A search engine is a software system that helps users find information on the internet by searching through billions of web pages and returning the most relevant results.</p>
+          <p>Think of it as the world's most powerful librarian. When you ask a question, it doesn't search the internet live — it searches a massive pre-built database (called an index) of pages it has already visited, and returns the best answers in milliseconds.</p>
+
+          <div class="pill-grid">
+            <span class="pill">🔍 Google — 92% global market share</span>
+            <span class="pill">🔵 Microsoft Bing — 3%</span>
+            <span class="pill">🟡 Yahoo — 1.5%</span>
+            <span class="pill">🦆 DuckDuckGo — privacy-focused</span>
+          </div>
+
+          <div class="stat-cards">
+            <div class="stat-card">
+              <span class="num">8.5B</span>
+              <p>Searches on Google every single day — 99,000 per second</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">200+</span>
+              <p>Ranking factors Google uses to decide which page ranks #1</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">0.5s</span>
+              <p>Time it takes Google to return search results from billions of pages</p>
+            </div>
+          </div>
+
+          <div class="clue-card">
+            <span class="clue-icon">🏛️</span>
+            <div>
+              <strong>Real-World Analogy</strong>
+              <p>Imagine you walk into the world's biggest library — containing over <strong>8 billion books</strong>. Instead of searching one by one, a brilliant librarian instantly hands you the exact 10 most relevant books. That librarian is Google. The library is the internet. And the card catalogue they use is called the <strong>Search Index</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 What is SEO -->
+        <div class="section">
+          <h2>🏆 2.2 What is SEO?</h2>
+          <p><strong>SEO stands for Search Engine Optimisation.</strong> It is the process of improving your website and its content so that search engines rank your pages higher in search results — without paying for ads.</p>
+          <p>The goal is simple: <strong>increase organic (free) traffic</strong> to your website by being Google's top recommendation when someone searches for what you offer.</p>
+
+          <div class="highlight-box">
+            <h4>🏠 Think of Google as a Real Estate Market</h4>
+            <p>Page 1 of Google is prime real estate — everyone wants to be there. Position #1 is a penthouse apartment; Position #10 is the last flat on the floor. Page 2 onwards is like a shop in a deserted alley — barely anyone visits. SEO is how you move your business from page 10 to page 1. And unlike paid ads, once you're there, the traffic is FREE.</p>
+          </div>
+
+          <div class="stat-cards">
+            <div class="stat-card">
+              <span class="num">75%</span>
+              <p>of users never scroll past the first page of Google results</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">27%</span>
+              <p>of all clicks go to the #1 result on Google — it dominates</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">₹0</span>
+              <p>Cost per click for organic SEO traffic — unlike paid ads that cost per click</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            📌 <strong>Why SEO over paid ads?</strong> When you stop paying for ads, traffic stops immediately. But with SEO, once you rank, you continue to receive free traffic around the clock — while you sleep, on weekends, on holidays. It is the most sustainable long-term traffic strategy in digital marketing.
+          </div>
+        </div>
+
+        <!-- 2.3 How Search Engines Work -->
+        <div class="section">
+          <h2>⚙️ 2.3 How Search Engines Work</h2>
+          <p>Before Google can rank your website, it must first discover and understand it. This happens through a 3-stage process that runs constantly, every hour of every day.</p>
+
+          <div class="process-steps">
+            <div class="process-step">
+              <div class="ps-num">1</div>
+              <div class="ps-line"></div>
+              <div class="ps-content">
+                <strong>🕷️ Stage 1: Crawling — Discovery</strong>
+                <p>Google sends out automated software robots called <strong>Googlebots</strong> (also called "spiders" or "crawlers") that constantly visit web pages across the internet. They follow links from page to page, reading all the content, code, and structure. A new page can only be found if it has links pointing to it, or if it has been submitted to Google via a sitemap. If Google can't crawl your page, it cannot rank it.</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <div class="ps-num">2</div>
+              <div class="ps-line"></div>
+              <div class="ps-content">
+                <strong>📂 Stage 2: Indexing — Storage &amp; Understanding</strong>
+                <p>After crawling, Google analyses and stores everything it found in a massive database called the <strong>Search Index</strong> — essentially a giant catalogue of the entire web. If a page is not indexed (due to technical errors, no-index tags, or blocked robots.txt), it will <em>never</em> appear in search results — no matter how great the content is. The index contains over 100 petabytes of data.</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <div class="ps-num">3</div>
+              <div class="ps-line"></div>
+              <div class="ps-content">
+                <strong>🏅 Stage 3: Ranking — Ordering Results</strong>
+                <p>When someone types a search query, Google instantly evaluates all indexed pages against <strong>200+ ranking factors</strong> — including relevance, content quality, page speed, backlinks, user experience, mobile-friendliness, and much more. The result? The most deserving page gets position #1 in under half a second. This is what SEO directly influences.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="clue-card">
+            <span class="clue-icon">👨‍🍳</span>
+            <div>
+              <strong>Easy Memory Trick: The Chef Analogy</strong>
+              <p><strong>Crawling</strong> = The chef goes grocery shopping (discovering ingredients / web pages). <strong>Indexing</strong> = Storing ingredients neatly in the pantry. <strong>Ranking</strong> = Deciding which dish to serve first to the customer based on quality, taste, and presentation.</p>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="col-card good">
+              <h4>✅ Google Can Easily Crawl When:</h4>
+              <ul>
+                <li>Your site loads fast (under 2 seconds)</li>
+                <li>You have an XML sitemap submitted</li>
+                <li>Internal links connect all your pages</li>
+                <li>No broken links or server errors</li>
+              </ul>
+            </div>
+            <div class="col-card bad">
+              <h4>❌ Google Struggles to Crawl When:</h4>
+              <ul>
+                <li>Pages blocked in robots.txt file</li>
+                <li>No-index meta tags on important pages</li>
+                <li>Slow loading speed (&gt;5 seconds)</li>
+                <li>Pages with no links pointing to them</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.4 Keywords -->
+        <div class="section">
+          <h2>🔑 2.4 Keywords — The Bridge Between Users and Websites</h2>
+          <p>Keywords are the words and phrases that people type (or voice-search) into Google when they want information, products, or services. They are literally <strong>the bridge between what your customer needs and what your website offers</strong>.</p>
+          <p>If you want to rank on Google, you must first understand what words your ideal customers are searching — and then create content that answers those searches better than anyone else.</p>
+
+          <h3>Real Examples of Keywords:</h3>
+          <div class="kw-demo">
+            <div class="search-bar">🔍 <span>best CRM software for small business</span></div>
+            <div class="kw-type">
+              <span class="kw-badge long">Long-tail ✓</span>
+              <span style="font-size:13px;color:var(--grey);">Specific, lower competition, high conversion intent</span>
+            </div>
+          </div>
+          <div class="kw-demo">
+            <div class="search-bar">🔍 <span>pizza</span></div>
+            <div class="kw-type">
+              <span class="kw-badge short">Short-tail ✗</span>
+              <span style="font-size:13px;color:var(--grey);">Too broad, massive competition, unclear intent — near impossible to rank for</span>
+            </div>
+          </div>
+          <div class="kw-demo">
+            <div class="search-bar">🔍 <span>SEO agency in Gurgaon for e-commerce brands</span></div>
+            <div class="kw-type">
+              <span class="kw-badge long">Long-tail ✓</span>
+              <span style="font-size:13px;color:var(--grey);">Highly specific, low competition, user is clearly ready to hire</span>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="col-card good">
+              <h4>🎯 Long-tail Keywords</h4>
+              <ul>
+                <li>"best budget DSLR camera under ₹30,000"</li>
+                <li>"how to make biryani at home for beginners"</li>
+                <li>"digital marketing agency for hospitals Delhi"</li>
+                <li>3–6 words long, very specific</li>
+                <li>Lower search volume but higher conversion</li>
+                <li>Best for new/small websites to rank fast</li>
+              </ul>
+            </div>
+            <div class="col-card blue">
+              <h4>🌊 Short-tail Keywords</h4>
+              <ul>
+                <li>"camera" / "biryani" / "marketing"</li>
+                <li>1–2 words, extremely broad</li>
+                <li>Millions of searches but millions of competitors</li>
+                <li>Very hard to rank for without massive authority</li>
+                <li>Lower conversion — unclear what user wants</li>
+                <li>Best for large established brands only</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="clue-card">
+            <span class="clue-icon">🎯</span>
+            <div>
+              <strong>Pro Tip: Start with Long-tail Keywords</strong>
+              <p>If you're a new website, trying to rank for "shoes" is like trying to beat Adidas and Nike on day one. But "comfortable waterproof running shoes for women with flat feet" is achievable within months — and every visitor is already a highly qualified potential buyer. Build authority with long-tail first, then go broader.</p>
+            </div>
+          </div>
+
+          <h3>🔧 Keyword Research Tools:</h3>
+          <div class="pill-grid">
+            <span class="pill">🔍 Google Keyword Planner — Free</span>
+            <span class="pill">📊 Ahrefs — Paid, powerful</span>
+            <span class="pill">🔎 SEMrush — All-in-one</span>
+            <span class="pill">💡 Ubersuggest — Beginner-friendly</span>
+            <span class="pill">🌐 Google Search Console — Free</span>
+          </div>
+        </div>
+
+        <!-- 2.5 Search Intent -->
+        <div class="section">
+          <h2>🧠 2.5 Search Intent — The "Why" Behind Every Search</h2>
+          <p>Search intent (also called "user intent") is the <em>underlying reason</em> why someone types a particular query into Google. Google's primary goal is to match content to intent — if your page doesn't satisfy what the user actually wants, you won't rank, even with perfect technical SEO.</p>
+          <p>Understanding search intent is arguably the <strong>most critical</strong> concept in all of SEO. Getting it wrong wastes all your effort; getting it right unlocks rankings.</p>
+
+          <div class="intent-grid">
+            <div class="intent-card info">
+              <h4>📚 Informational Intent</h4>
+              <p>User wants to learn something or find an answer. They're not ready to buy yet — they're researching.</p>
+              <br/><em>Examples: "what is SEO" · "how does Google work" · "digital marketing tips for beginners"</em><br/><br/>
+              <p><strong>Best content type:</strong> Blog posts, how-to guides, videos, infographics</p>
+            </div>
+            <div class="intent-card trans">
+              <h4>🛒 Transactional Intent</h4>
+              <p>User is ready to buy, sign up, or take action right now. These visitors are the most valuable.</p>
+              <br/><em>Examples: "buy iPhone 15 Pro online" · "subscribe to Netflix" · "book dental appointment near me"</em><br/><br/>
+              <p><strong>Best content type:</strong> Product pages, landing pages, pricing pages</p>
+            </div>
+            <div class="intent-card comm">
+              <h4>🤔 Commercial Investigation</h4>
+              <p>User is comparing options and evaluating before making a purchase decision.</p>
+              <br/><em>Examples: "iPhone 15 vs Samsung S24" · "best project management tools 2024" · "Swiggy vs Zomato"</em><br/><br/>
+              <p><strong>Best content type:</strong> Comparison articles, reviews, "best of" lists</p>
+            </div>
+            <div class="intent-card nav">
+              <h4>🧭 Navigational Intent</h4>
+              <p>User already knows where they want to go — they're using Google as a shortcut to a specific site.</p>
+              <br/><em>Examples: "Amazon login" · "Facebook marketplace" · "SingleInterface website"</em><br/><br/>
+              <p><strong>Best content type:</strong> Your branded homepage, login page, specific tool pages</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            📌 <strong>Real Example:</strong> If someone searches "best running shoes for knee pain," they have <em>commercial investigation</em> intent — they want a comparison article with recommendations, NOT a homepage or a checkout page. Sending them to a product page will increase your bounce rate and tank your rankings. Always match your content type to the user's intent.
+          </div>
+        </div>
+
+        <!-- 2.6 On-Page SEO -->
+        <div class="section">
+          <h2>📄 2.6 On-Page SEO — Optimising What's On Your Website</h2>
+          <p>On-page SEO refers to all the optimisations you make <strong>directly on your website pages</strong> to help search engines understand your content and users find what they need. It's entirely in your control and forms the foundation of any SEO strategy.</p>
+
+          <div class="onpage-grid">
+            <div class="onpage-item">
+              <span class="oi-icon">🏷️</span>
+              <h5>Title Tags</h5>
+              <p>The clickable blue headline in Google results. Most important on-page element.</p>
+            </div>
+            <div class="onpage-item">
+              <span class="oi-icon">📝</span>
+              <h5>Meta Description</h5>
+              <p>The grey description text below the title. Affects click-through rate significantly.</p>
+            </div>
+            <div class="onpage-item">
+              <span class="oi-icon">📰</span>
+              <h5>Headings (H1-H6)</h5>
+              <p>Structuring your content so Google and readers can understand it easily.</p>
+            </div>
+            <div class="onpage-item">
+              <span class="oi-icon">🔗</span>
+              <h5>Internal Links</h5>
+              <p>Connecting your pages together so Google discovers all content.</p>
+            </div>
+            <div class="onpage-item">
+              <span class="oi-icon">🖼️</span>
+              <h5>Image Alt Text</h5>
+              <p>Describing images to Google, which cannot visually "see" them.</p>
+            </div>
+            <div class="onpage-item">
+              <span class="oi-icon">✍️</span>
+              <h5>Content Quality</h5>
+              <p>Comprehensive, accurate, readable content that truly answers the query.</p>
+            </div>
+          </div>
+
+          <div class="tab-bar" style="margin-top:20px;">
+            <button class="tab-btn active" onclick="switchTab(this,'onpage-tabs','op-title')">Title Tags</button>
+            <button class="tab-btn" onclick="switchTab(this,'onpage-tabs','op-meta')">Meta Tags</button>
+            <button class="tab-btn" onclick="switchTab(this,'onpage-tabs','op-headings')">Headings</button>
+            <button class="tab-btn" onclick="switchTab(this,'onpage-tabs','op-internal')">Internal Links</button>
+            <button class="tab-btn" onclick="switchTab(this,'onpage-tabs','op-content')">Content</button>
+          </div>
+          <div id="onpage-tabs">
+            <div class="tab-pane active" id="op-title">
+              <div class="example-box">
+                <strong>🏷️ Title Tags — The Single Most Important On-Page Factor</strong>
+                The title tag is the blue clickable headline that appears in Google search results. It's the first thing users see and Google weighs it heavily. Always include your primary keyword naturally, keep it under 60 characters, and make it compelling enough to click.
+                <div class="code-block" style="margin-top:12px;"><span class="tag">&lt;title&gt;</span><span class="val">Best SEO Agency in Mumbai | Proven Results — SingleInterface</span><span class="tag">&lt;/title&gt;</span></div>
+                <strong style="display:block;margin-top:12px;font-size:12px;">❌ Bad Title Tag:</strong>
+                <div class="code-block"><span class="tag">&lt;title&gt;</span><span class="val">Home | My Website | Services | About | Contact | Blog</span><span class="tag">&lt;/title&gt;</span></div>
+                <p style="margin-top:8px;font-size:13px;">The bad version has no keyword, is stuffed with generic words, and gives Google and users no useful information about the page.</p>
+              </div>
+            </div>
+            <div class="tab-pane" id="op-meta">
+              <div class="example-box">
+                <strong>📝 Meta Descriptions — The Pitch That Gets the Click</strong>
+                The meta description is the grey descriptive text that appears under the title in search results. It doesn't directly affect rankings, but a compelling description significantly increases your click-through rate (CTR) — which does affect rankings. Keep it under 160 characters and include a clear benefit or call-to-action.
+                <div class="code-block" style="margin-top:12px;"><span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"description"</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">content</span>=<span class="val">"We've helped 500+ brands rank #1 on Google. Proven SEO strategies, transparent reporting, real results. Get a free audit today!"</span><span class="tag">&gt;</span></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="op-headings">
+              <div class="example-box">
+                <strong>📰 Heading Structure (H1 → H6) — Signposts for Google and Readers</strong>
+                Headings create a logical hierarchy in your content. Every page should have exactly <strong>one H1</strong> (the main topic), then use H2s for major sections and H3s for sub-points. Google uses headings to understand your page structure and identify the main topics covered.
+                <div class="code-block" style="margin-top:12px;">
+                  <span class="tag">&lt;h1&gt;</span><span class="val">Complete Guide to SEO for E-commerce</span><span class="tag">&lt;/h1&gt;</span><br/>
+                  <span class="tag">&nbsp;&lt;h2&gt;</span><span class="val">On-Page SEO for Product Pages</span><span class="tag">&lt;/h2&gt;</span><br/>
+                  <span class="tag">&nbsp;&nbsp;&lt;h3&gt;</span><span class="val">How to Write Product Title Tags</span><span class="tag">&lt;/h3&gt;</span>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="op-internal">
+              <div class="example-box">
+                <strong>🔗 Internal Linking — Connect Your Content Like a Web</strong>
+                Internal links are hyperlinks from one page on your website to another page on the same website. They serve two critical purposes: (1) They help Google discover and crawl all your pages, and (2) They pass "link authority" from strong pages to weaker ones, lifting their rankings.<br/><br/>
+                <strong>Example:</strong> Your high-traffic blog post about "What is SEO" should link to your "SEO Services" page with the anchor text "professional SEO services." This tells Google what the linked page is about AND passes authority to it.
+              </div>
+            </div>
+            <div class="tab-pane" id="op-content">
+              <div class="example-box">
+                <strong>✍️ Content Quality — The Foundation of All SEO</strong>
+                Google's entire purpose is to provide the best possible answer to every search query. If your content is the most comprehensive, accurate, and well-structured answer to a query, Google will rank it highly — regardless of other factors.<br/><br/>
+                <strong>Google's E-E-A-T principle:</strong><br/>
+                🔹 <strong>Experience</strong> — Has the author experienced this firsthand?<br/>
+                🔹 <strong>Expertise</strong> — Is the author knowledgeable on the topic?<br/>
+                🔹 <strong>Authoritativeness</strong> — Is the website a recognised authority?<br/>
+                🔹 <strong>Trustworthiness</strong> — Is the content accurate and verifiable?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.7 Off-Page SEO -->
+        <div class="section">
+          <h2>🌐 2.7 Off-Page SEO — Building Authority Outside Your Website</h2>
+          <p>If on-page SEO is about what <em>you</em> say about your website, off-page SEO is about what the <em>rest of the internet</em> says about it. It builds your website's <strong>trust, authority, and reputation</strong> in Google's eyes — primarily through backlinks.</p>
+
+          <h3>🔗 What Are Backlinks?</h3>
+          <p>A backlink (also called an "inbound link") is when another website links to your website. It's essentially one website recommending another. Google's founders originally built the entire search engine on the idea that a page linked to by many other pages must be important — this principle, called PageRank, still powers Google's algorithm today.</p>
+
+          <div class="highlight-box">
+            <h4>🗳️ Think of Backlinks Like Votes in an Election</h4>
+            <p>One endorsement from a respected national newspaper carries more weight than 500 endorsements from unknown strangers. Similarly, a single backlink from the Times of India or Harvard University is worth more than 500 backlinks from random spam websites. Google deeply cares about the quality and relevance of who is vouching for you.</p>
+          </div>
+
+          <div class="two-col">
+            <div class="col-card good">
+              <h4>✅ High-Quality Backlinks (Boost Rankings)</h4>
+              <ul>
+                <li>From high domain authority websites (DA 50+)</li>
+                <li>From websites relevant to your industry</li>
+                <li>Earned naturally — not bought or exchanged</li>
+                <li>From trusted news sites, universities, gov sites</li>
+                <li>Using descriptive, keyword-rich anchor text</li>
+                <li>From pages with their own traffic and links</li>
+              </ul>
+            </div>
+            <div class="col-card bad">
+              <h4>❌ Low-Quality Backlinks (Can Harm Rankings)</h4>
+              <ul>
+                <li>From spam websites with no real traffic</li>
+                <li>From completely irrelevant industries</li>
+                <li>Bought in bulk from link farms</li>
+                <li>Excessive link exchanges ("I link to you, you link to me")</li>
+                <li>Hidden or invisible links on pages</li>
+                <li>Hundreds of identical anchor text links</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>📈 How to Build Good Backlinks:</h3>
+          <ul class="seo-checklist">
+            <li><span class="ck">1</span><div><strong>Guest Blogging:</strong> Write high-quality articles for reputable websites in your industry. In return, include a link back to your site in the author bio or content. Win-win.</div></li>
+            <li><span class="ck">2</span><div><strong>Create Link-worthy Content:</strong> Publish original research, comprehensive guides, unique data, or free tools that other websites naturally want to reference and link to.</div></li>
+            <li><span class="ck">3</span><div><strong>Digital PR:</strong> Get your brand mentioned in news articles and industry publications by pitching newsworthy stories to journalists.</div></li>
+            <li><span class="ck">4</span><div><strong>Broken Link Building:</strong> Find links on other websites that point to dead pages, and suggest they replace them with a link to your relevant, working content.</div></li>
+            <li><span class="ck">5</span><div><strong>Business Directories &amp; Citations:</strong> List your business on trusted directories like Justdial, IndiaMart, Google Business Profile, and industry-specific directories.</div></li>
+          </ul>
+
+          <div class="callout">
+            <span class="ci">⚠️</span>
+            <div>
+              <strong>Warning: Black Hat Link Building</strong><br/>
+              Buying backlinks or using automated link-building tools violates Google's guidelines. Google's Penguin algorithm specifically hunts for unnatural link patterns. Websites caught engaging in manipulative link building are hit with a <strong>Google Penalty</strong> — causing rankings to drop overnight and traffic to collapse. Always build links ethically.
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.8 Technical SEO -->
+        <div class="section">
+          <h2>⚙️ 2.8 Technical SEO — Building the Right Foundation</h2>
+          <p>Technical SEO ensures that the <strong>infrastructure of your website</strong> is built in a way that allows search engines to easily crawl, understand, and index your pages — and that users have a fast, secure, and seamless experience. Great content and backlinks mean nothing if Google can't properly access your site.</p>
+
+          <div class="tech-grid">
+            <div class="tech-card">
+              <span class="tc-icon">⚡</span>
+              <h4>Page Speed</h4>
+              <p>How fast your pages load. Google uses Core Web Vitals to measure this. Slow pages rank lower and users abandon them.</p>
+            </div>
+            <div class="tech-card">
+              <span class="tc-icon">📱</span>
+              <h4>Mobile Friendliness</h4>
+              <p>Google uses mobile-first indexing — it evaluates your mobile site first. A bad mobile experience = bad rankings.</p>
+            </div>
+            <div class="tech-card">
+              <span class="tc-icon">🏷️</span>
+              <h4>Schema Markup</h4>
+              <p>Structured data code that tells Google exactly what your content means, enabling rich results in search.</p>
+            </div>
+            <div class="tech-card">
+              <span class="tc-icon">🔒</span>
+              <h4>HTTPS Security</h4>
+              <p>Encrypted, secure websites. Google prefers HTTPS and Chrome marks HTTP sites as "Not Secure."</p>
+            </div>
+            <div class="tech-card">
+              <span class="tc-icon">🗺️</span>
+              <h4>XML Sitemap</h4>
+              <p>A file that lists all your important pages, helping Google discover and index everything efficiently.</p>
+            </div>
+            <div class="tech-card">
+              <span class="tc-icon">🤖</span>
+              <h4>Robots.txt</h4>
+              <p>A file that tells Google which pages to crawl and which to ignore. Misconfigured robots.txt can block your entire site.</p>
+            </div>
+          </div>
+
+          <h3>⚡ Website Speed — Why Every Second Costs You</h3>
+          <p>Page speed is a confirmed Google ranking factor and directly impacts user experience. Research shows that users have near-zero patience for slow websites:</p>
+
+          <div class="speed-bar-container">
+            <div class="speed-row">
+              <span class="speed-label">Under 1 sec ⚡</span>
+              <div class="speed-bar-bg"><div class="speed-bar" style="width:95%;background:var(--green);"></div></div>
+              <span class="speed-note">Excellent ✓</span>
+            </div>
+            <div class="speed-row">
+              <span class="speed-label">1–2 seconds 🟡</span>
+              <div class="speed-bar-bg"><div class="speed-bar" style="width:72%;background:#7fba00;"></div></div>
+              <span class="speed-note">Good</span>
+            </div>
+            <div class="speed-row">
+              <span class="speed-label">2–3 seconds 🟠</span>
+              <div class="speed-bar-bg"><div class="speed-bar" style="width:48%;background:var(--orange);"></div></div>
+              <span class="speed-note">Acceptable</span>
+            </div>
+            <div class="speed-row">
+              <span class="speed-label">3–5 seconds 🔴</span>
+              <div class="speed-bar-bg"><div class="speed-bar" style="width:25%;background:#ff5500;"></div></div>
+              <span class="speed-note">Users leave</span>
+            </div>
+            <div class="speed-row">
+              <span class="speed-label">5+ seconds ❌</span>
+              <div class="speed-bar-bg"><div class="speed-bar" style="width:8%;background:var(--red);"></div></div>
+              <span class="speed-note">Critical fail</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            📌 <strong>Business Impact of Page Speed:</strong> A 1-second delay in page load time results in a <strong>7% reduction in conversions</strong>. For an e-commerce site making ₹10 lakh per day, that's ₹70,000 lost every single day — just from one second of slowness.
+          </div>
+
+          <h3>📱 Mobile-First Indexing</h3>
+          <p>Since 2019, Google uses <strong>mobile-first indexing</strong> — meaning it evaluates and ranks websites primarily based on their <em>mobile version</em>, not desktop. This is because over 60% of all Google searches now happen on smartphones.</p>
+
+          <div class="callout">
+            <span class="ci">📱</span>
+            <div>
+              <strong>What this means for you:</strong><br/>
+              If your website looks beautiful on desktop but is broken, unreadable, or slow on mobile, Google will rank it based on the mobile experience. A desktop-only optimised site will perform poorly in search rankings, regardless of its desktop quality.
+            </div>
+          </div>
+
+          <h3>🏷️ Schema Markup — Standing Out in Search Results</h3>
+          <p>Schema markup is a special type of structured data code (vocabulary from Schema.org) that you add to your website HTML. It doesn't change what users see on the page — instead, it helps Google <em>deeply understand</em> what your content means, enabling it to show <strong>rich results</strong> (also called rich snippets) in search.</p>
+
+          <div class="example-box">
+            <strong>📸 Example: Recipe Schema in Action</strong>
+            Without schema: A recipe page appears as a plain blue link and grey text in Google.<br/>
+            With schema: Google shows the recipe with a photo, star rating (4.8/5), cooking time (45 mins), and calorie count — right in the search results. This result gets 3x more clicks than the plain version.
+          </div>
+
+          <p>Schema markup can enable rich results for:</p>
+          <div class="schema-pill-grid">
+            <div class="schema-pill">⭐ Product Ratings</div>
+            <div class="schema-pill">❓ FAQ Dropdowns</div>
+            <div class="schema-pill">💰 Live Prices</div>
+            <div class="schema-pill">📅 Events</div>
+            <div class="schema-pill">🍕 Recipe Details</div>
+            <div class="schema-pill">👤 Author Info</div>
+            <div class="schema-pill">📍 Business Location</div>
+            <div class="schema-pill">🎬 Video Thumbnails</div>
+          </div>
+
+          <div class="code-block">
+<span class="com">/* Example: Product Schema Markup */</span><br/>
+{<br/>
+&nbsp;&nbsp;<span class="tag">"@context"</span>: <span class="val">"https://schema.org"</span>,<br/>
+&nbsp;&nbsp;<span class="tag">"@type"</span>: <span class="val">"Product"</span>,<br/>
+&nbsp;&nbsp;<span class="tag">"name"</span>: <span class="val">"Wireless Noise-Cancelling Headphones"</span>,<br/>
+&nbsp;&nbsp;<span class="tag">"aggregateRating"</span>: {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">"ratingValue"</span>: <span class="val">"4.8"</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">"reviewCount"</span>: <span class="val">"1247"</span><br/>
+&nbsp;&nbsp;}<br/>
+}
+          </div>
+
+          <h3>🔒 HTTPS Security</h3>
+          <p>HTTPS (HyperText Transfer Protocol Secure) encrypts data transferred between a user's browser and your website. Google confirmed HTTPS as a ranking signal in 2014. More importantly, Chrome displays "Not Secure" warnings on HTTP sites — immediately destroying user trust and causing visitors to leave before even reading your content.</p>
+
+          <div class="two-col">
+            <div class="col-card good">
+              <h4>✅ HTTPS (Secure)</h4>
+              <ul>
+                <li>Padlock icon in browser address bar</li>
+                <li>Data encrypted end-to-end</li>
+                <li>Google ranking signal (positive)</li>
+                <li>Users trust your website fully</li>
+              </ul>
+            </div>
+            <div class="col-card bad">
+              <h4>❌ HTTP (Not Secure)</h4>
+              <ul>
+                <li>"Not Secure" warning in Chrome</li>
+                <li>Data transmitted in plain text</li>
+                <li>Google ranking disadvantage</li>
+                <li>Users immediately distrust the site</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.9 Local SEO -->
+        <div class="section">
+          <h2>📍 2.9 Local SEO — Dominating Your Neighbourhood on Google</h2>
+          <p>Local SEO is the practice of optimising your online presence so your business appears prominently in Google search results when people search for products or services <strong>near their location</strong>. It is one of the highest-ROI marketing strategies for any business with a physical location or local service area.</p>
+
+          <div class="stat-cards">
+            <div class="stat-card">
+              <span class="num">46%</span>
+              <p>of all Google searches have local intent — someone looking for something nearby</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">76%</span>
+              <p>of people who search "near me" visit a store within 24 hours</p>
+            </div>
+            <div class="stat-card">
+              <span class="num">90%+</span>
+              <p>of consumers read online reviews before visiting a business in person</p>
+            </div>
+          </div>
+
+          <h3>🗺️ The Local "Map Pack" — Prime Real Estate</h3>
+          <p>When someone searches "dentist near me" or "coffee shop Connaught Place," Google shows a prominent map at the top of results with 3 local business listings — this is called the <strong>Local Map Pack</strong>. Being in those top 3 spots drives massive foot traffic and phone calls. Local SEO is what gets you there.</p>
+
+          <div class="example-box">
+            <strong>💬 Classic Local SEO Search Queries</strong>
+            "dentist near me" · "pizza delivery Bandra" · "car service centre Gurgaon" · "gym in Koramangala" · "hotel near Delhi airport" · "CA firm Connaught Place" · "plumber near me open now"
+          </div>
+
+          <h3>📋 Google Business Profile (GBP) — Your Free Local SEO Superpower</h3>
+          <p>Google Business Profile (formerly Google My Business) is a free tool from Google that lets businesses manage how they appear in Google Search and Google Maps. It's the single most important asset for local SEO — and it's completely free.</p>
+
+          <div class="local-seo-card">
+            <h4>📌 What You Can Manage in Your Google Business Profile:</h4>
+            <div class="local-steps">
+              <div class="local-step">
+                <strong>⭐ Reviews</strong>
+                Respond to customer reviews (positive and negative). 90%+ of customers read reviews before visiting. More positive reviews = higher ranking in Map Pack.
+              </div>
+              <div class="local-step">
+                <strong>📸 Photos</strong>
+                Add professional photos of your store, team, products. Listings with photos get 42% more direction requests.
+              </div>
+              <div class="local-step">
+                <strong>🕒 Hours &amp; Info</strong>
+                Keep business hours, phone number, and address perfectly accurate and updated — especially during holidays.
+              </div>
+              <div class="local-step">
+                <strong>📝 Posts &amp; Updates</strong>
+                Publish offers, events, and updates directly on your Google profile to appear in search results.
+              </div>
+              <div class="local-step">
+                <strong>❓ Q&amp;A Section</strong>
+                Answer common customer questions proactively. Google also allows anyone to answer, so you must monitor this section.
+              </div>
+              <div class="local-step">
+                <strong>📊 Insights</strong>
+                See how many people found you, what they searched, how many called, and requested directions to your business.
+              </div>
+            </div>
+          </div>
+
+          <h3>🏆 Local SEO Ranking Factors:</h3>
+          <ul class="seo-checklist">
+            <li><span class="ck">1</span><div><strong>Relevance:</strong> How well your Google Business Profile matches the user's search query. Fill in every field completely and accurately.</div></li>
+            <li><span class="ck">2</span><div><strong>Distance:</strong> How close your business is to the searcher. You can't change your location, but you can expand your service area in GBP settings.</div></li>
+            <li><span class="ck">3</span><div><strong>Prominence:</strong> How well-known and trusted your business is online — based on reviews, backlinks, mentions, and online ratings.</div></li>
+            <li><span class="ck">4</span><div><strong>Reviews:</strong> The quantity, quality, and recency of your reviews. Aim for a consistent stream of genuine positive reviews.</div></li>
+            <li><span class="ck">5</span><div><strong>Citations:</strong> Consistent NAP (Name, Address, Phone) information across all online directories — Justdial, IndiaMart, Yelp, etc.</div></li>
+          </ul>
+
+          <div class="clue-card">
+            <span class="clue-icon">🏪</span>
+            <div>
+              <strong>Local SEO Levels the Playing Field for Small Businesses</strong>
+              <p>A small independent salon in Pune with 150 Google reviews, updated photos, and a fully completed GBP profile can outrank a large national salon chain that has neglected its local SEO. This is the power of Local SEO — it rewards effort and genuine customer relationships, not just big marketing budgets.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUIZ 2 -->
+        <div class="quiz-section" id="quiz-1">
+          <div class="quiz-header">
+            <div class="quiz-badge">🏆</div>
+            <div>
+              <h2>Final Chapter Quiz — Complete the Course!</h2>
+              <p>Score 4 or 5 out of 5 to earn your Digital Marketing Fundamentals certificate!</p>
+            </div>
+          </div>
+          <div class="quiz-question" id="q1-1">
+            <div class="q-num">Question 1 of 5</div>
+            <div class="q-text">What are the correct 3 stages search engines use to process web pages, in the right order?</div>
+            <div class="options">
+              <div class="option" onclick="selectOption(this,'q1-1')"><div class="opt-radio"></div>Design → Build → Launch</div>
+              <div class="option" onclick="selectOption(this,'q1-1')"><div class="opt-radio"></div>Crawling → Indexing → Ranking</div>
+              <div class="option" onclick="selectOption(this,'q1-1')"><div class="opt-radio"></div>Writing → Publishing → Sharing</div>
+              <div class="option" onclick="selectOption(this,'q1-1')"><div class="opt-radio"></div>Hosting → Coding → Launching</div>
+            </div>
+            <div class="feedback" id="fb-q1-1"></div>
+          </div>
+          <div class="quiz-question" id="q1-2">
+            <div class="q-num">Question 2 of 5</div>
+            <div class="q-text">Which type of keyword is "best budget DSLR camera under ₹30,000 for beginners"?</div>
+            <div class="options">
+              <div class="option" onclick="selectOption(this,'q1-2')"><div class="opt-radio"></div>Short-tail keyword — broad and high competition</div>
+              <div class="option" onclick="selectOption(this,'q1-2')"><div class="opt-radio"></div>Navigational keyword — user looking for a specific brand</div>
+              <div class="option" onclick="selectOption(this,'q1-2')"><div class="opt-radio"></div>Long-tail keyword — specific, lower competition, high conversion intent</div>
+              <div class="option" onclick="selectOption(this,'q1-2')"><div class="opt-radio"></div>Brand keyword — user searching for a brand directly</div>
+            </div>
+            <div class="feedback" id="fb-q1-2"></div>
+          </div>
+          <div class="quiz-question" id="q1-3">
+            <div class="q-num">Question 3 of 5</div>
+            <div class="q-text">What does Google treat backlinks as, and why are they important for SEO?</div>
+            <div class="options">
+              <div class="option" onclick="selectOption(this,'q1-3')"><div class="opt-radio"></div>Paid advertisements that boost visibility instantly</div>
+              <div class="option" onclick="selectOption(this,'q1-3')"><div class="opt-radio"></div>Votes of trust and authority from other websites, signalling that your content is valuable</div>
+              <div class="option" onclick="selectOption(this,'q1-3')"><div class="opt-radio"></div>Navigation links within the same website connecting pages</div>
+              <div class="option" onclick="selectOption(this,'q1-3')"><div class="opt-radio"></div>Social media shares and likes from your followers</div>
+            </div>
+            <div class="feedback" id="fb-q1-3"></div>
+          </div>
+          <div class="quiz-question" id="q1-4">
+            <div class="q-num">Question 4 of 5</div>
+            <div class="q-text">A user searches "iPhone 15 vs Samsung S24 — which is better?" — what type of search intent is this?</div>
+            <div class="options">
+              <div class="option" onclick="selectOption(this,'q1-4')"><div class="opt-radio"></div>Informational — they want to learn a concept</div>
+              <div class="option" onclick="selectOption(this,'q1-4')"><div class="opt-radio"></div>Transactional — they're ready to buy right now</div>
+              <div class="option" onclick="selectOption(this,'q1-4')"><div class="opt-radio"></div>Commercial Investigation — they're comparing options before deciding</div>
+              <div class="option" onclick="selectOption(this,'q1-4')"><div class="opt-radio"></div>Navigational — they're looking for a specific website</div>
+            </div>
+            <div class="feedback" id="fb-q1-4"></div>
+          </div>
+          <div class="quiz-question" id="q1-5">
+            <div class="q-num">Question 5 of 5</div>
+            <div class="q-text">What is Schema Markup and what does it help achieve in search results?</div>
+            <div class="options">
+              <div class="option" onclick="selectOption(this,'q1-5')"><div class="opt-radio"></div>A tool to make your website load faster and improve page speed scores</div>
+              <div class="option" onclick="selectOption(this,'q1-5')"><div class="opt-radio"></div>A technique to build backlinks from high authority external websites</div>
+              <div class="option" onclick="selectOption(this,'q1-5')"><div class="opt-radio"></div>Structured data code that helps Google understand your content and display rich results like ratings, FAQs and prices</div>
+              <div class="option" onclick="selectOption(this,'q1-5')"><div class="opt-radio"></div>A social media strategy to improve your brand's engagement and follower count</div>
+            </div>
+            <div class="feedback" id="fb-q1-5"></div>
+          </div>
+          <div class="quiz-actions">
+            <div class="quiz-score" id="score-1"></div>
+            <button class="submit-quiz" id="submit-1" onclick="submitQuiz(1)" disabled>Submit Final Quiz →</button>
+          </div>
+          <div class="result-banner pass" id="result-pass-1">
+            <h3>🏆 Outstanding! You've Completed the Course!</h3>
+            <p>You passed the final quiz with flying colours. Claim your Digital Marketing Fundamentals certificate now!</p>
+            <button class="unlock-btn" onclick="showCompletion()">🎓 Claim Your Certificate →</button>
+          </div>
+          <div class="result-banner fail" id="result-fail-1">
+            <h3>📚 Almost There — You Can Do This!</h3>
+            <p>You need at least 4 out of 5 correct to earn your certificate. Review the SEO sections and try again!</p>
+            <button class="retry-btn" onclick="retryQuiz(1)">🔄 Retry Quiz</button>
+          </div>
+        </div>
+      </div><!-- /chapter-1-content -->
+    </div><!-- /chapter-1 -->
+
+    <!-- Completion -->
+    <div class="completion-panel" id="completion-panel">
+      <div class="cert-badge">
+        <span class="trophy">🏆</span>
+        <span>Certificate of Completion</span>
+      </div>
+      <h1>Congratulations! 🎉</h1>
+      <p>You've successfully completed <strong>Digital Marketing Fundamentals</strong> — a comprehensive course by SingleInterface Learning Academy. You now understand how digital marketing works, how search engines rank content, and how to use SEO to grow a business online.</p>
+      <div class="cert-actions">
+        <button class="cert-btn primary">📥 Download Certificate</button>
+        <button class="cert-btn">🔗 Share on LinkedIn</button>
+        <button class="cert-btn">🔁 Retake Course</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  /* ── STATE ── */
+  const chapterUnlocked = [true, false];
+  const chapterCompleted = [false, false];
+
+  // correct answer = 0-based index of the correct option
+  const ANSWERS = {
+    0: { 'q0-1': 1, 'q0-2': 2, 'q0-3': 1, 'q0-4': 1, 'q0-5': 2 },
+    1: { 'q1-1': 1, 'q1-2': 2, 'q1-3': 1, 'q1-4': 2, 'q1-5': 2 }
+  };
+  const FB = {
+    0: {
+      'q0-1': { r:'✓ Correct! Digital marketing uses online platforms and digital technologies to promote products and brands.', w:'✗ Incorrect. Digital marketing is specifically about online channels — not physical distribution or in-store promotions.' },
+      'q0-2': { r:'✓ Correct! Google processes a staggering 8.5 billion searches every single day — about 99,000 every second.', w:'✗ Incorrect. Google handles over 8.5 billion searches per day — far more than the other options suggest.' },
+      'q0-3': { r:'✓ Correct! Billboard and Outdoor Advertising is traditional marketing — it is NOT one of the 6 digital marketing components.', w:'✗ Incorrect. Billboard Advertising is traditional marketing, not digital. The 6 digital components are SEO, Social Media, Content, Paid Ads, Email, and Analytics.' },
+      'q0-4': { r:'✓ Correct! Precise audience targeting and real-time measurement are the defining advantages of digital marketing.', w:'✗ Incorrect. The key advantage is the ability to precisely target specific audiences and instantly measure ROI — something traditional marketing cannot do.' },
+      'q0-5': { r:"✓ Correct! Netflix uses AI-powered hyper-personalisation to match content recommendations uniquely to each of its 300M+ users.", w:"✗ Incorrect. This is AI-powered personalisation — using machine learning to create a unique content experience for every individual user." },
+    },
+    1: {
+      'q1-1': { r:'✓ Correct! The 3 stages are Crawling (discovering pages), Indexing (storing them), and Ranking (ordering results) — in exactly that order.', w:'✗ Incorrect. Search engines first Crawl (discover pages via bots), then Index (store and understand them), then Rank (order them for relevant searches).' },
+      'q1-2': { r:'✓ Correct! A specific, multi-word phrase targeting a very particular need is a long-tail keyword — lower competition and higher purchase intent.', w:'✗ Incorrect. This detailed, specific multi-word phrase is a classic long-tail keyword. It has lower competition and attracts highly qualified buyers.' },
+      'q1-3': { r:'✓ Correct! Backlinks are votes of trust from other websites. More high-quality backlinks = higher domain authority = better Google rankings.', w:'✗ Incorrect. Backlinks are votes of trust from other websites — the foundational principle of Google\'s PageRank algorithm, still central to SEO today.' },
+      'q1-4': { r:'✓ Correct! Comparing two products shows Commercial Investigation intent — the user is evaluating options before making a buying decision.', w:'✗ Incorrect. Comparing two products is Commercial Investigation intent — the user is researching, not buying yet, and not just seeking information.' },
+      'q1-5': { r:'✓ Correct! Schema markup is structured data that helps Google understand content deeply, enabling rich results like star ratings, FAQs, and prices in search.', w:'✗ Incorrect. Schema markup is structured data code that allows Google to display rich snippets (ratings, FAQs, prices, events) in search results — boosting CTR.' },
+    }
+  };
+
+  const selectedAnswers = { 0: {}, 1: {} };
+
+  /* ── TABS ── */
+  function switchTab(btn, containerId, paneId) {
+    document.querySelectorAll('#'+containerId+' .tab-pane').forEach(p => p.classList.remove('active'));
+    btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(paneId).classList.add('active');
+  }
+
+  /* ── CHAPTER NAVIGATION ── */
+  function showChapter(idx) {
+    if (!chapterUnlocked[idx]) return;
+    document.querySelectorAll('.chapter-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.chapter-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('chapter-' + idx).classList.add('active');
+    document.getElementById('nav-' + idx).classList.add('active');
+    // FIX: scroll to top of main content area and window
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    document.getElementById('main-scroll').scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+
+  function tryChapter(idx) {
+    if (chapterUnlocked[idx]) { showChapter(idx); return; }
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:80px;right:24px;background:#fff;border:2px solid var(--orange);border-radius:12px;padding:14px 20px;font-family:Prompt,sans-serif;font-size:14px;font-weight:600;color:#7a4500;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:320px;';
+    msg.textContent = '⚠️ Complete the Chapter 1 quiz (score 4/5 or higher) to unlock this chapter!';
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 3500);
+  }
+
+  /* ── OPTION SELECT ── */
+  function selectOption(el, qId) {
+    const chapterIdx = parseInt(qId.charAt(1));
+    const container = el.closest('.quiz-question');
+    if (container.querySelector('.option.correct') || container.querySelector('.option.wrong')) return;
+    container.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const options = Array.from(container.querySelectorAll('.option'));
+    selectedAnswers[chapterIdx][qId] = options.indexOf(el);
+    // enable submit if all answered
+    const allQids = Object.keys(ANSWERS[chapterIdx]);
+    const allDone = allQids.every(q => selectedAnswers[chapterIdx][q] !== undefined);
+    if (allDone) document.getElementById('submit-' + chapterIdx).disabled = false;
+  }
+
+  /* ── SUBMIT ── */
+  function submitQuiz(chapterIdx) {
+    const qids = Object.keys(ANSWERS[chapterIdx]);
+    let score = 0;
+    qids.forEach(qid => {
+      const userAns = selectedAnswers[chapterIdx][qid];
+      const correctAns = ANSWERS[chapterIdx][qid];
+      const container = document.getElementById(qid);
+      const options = Array.from(container.querySelectorAll('.option'));
+      const fb = document.getElementById('fb-' + qid);
+      options.forEach(o => { o.classList.remove('selected'); o.classList.add('disabled'); o.onclick = null; });
+      options[correctAns].classList.add('correct');
+      if (userAns === correctAns) {
+        fb.textContent = FB[chapterIdx][qid].r;
+        fb.className = 'feedback correct';
+        score++;
+      } else {
+        options[userAns].classList.add('wrong');
+        fb.textContent = FB[chapterIdx][qid].w;
+        fb.className = 'feedback wrong';
+      }
+    });
+    const scoreEl = document.getElementById('score-' + chapterIdx);
+    scoreEl.textContent = 'Your Score: ' + score + ' / 5';
+    scoreEl.style.display = 'block';
+    document.getElementById('submit-' + chapterIdx).disabled = true;
+    if (score >= 4) {
+      chapterCompleted[chapterIdx] = true;
+      document.getElementById('result-pass-' + chapterIdx).style.display = 'block';
+    } else {
+      document.getElementById('result-fail-' + chapterIdx).style.display = 'block';
+    }
+    updateProgress();
+  }
+
+  /* ── RETRY ── */
+  function retryQuiz(chapterIdx) {
+    const qids = Object.keys(ANSWERS[chapterIdx]);
+    selectedAnswers[chapterIdx] = {};
+    qids.forEach(qid => {
+      const container = document.getElementById(qid);
+      const options = Array.from(container.querySelectorAll('.option'));
+      options.forEach(o => {
+        o.className = 'option';
+        o.onclick = function() { selectOption(o, qid); };
+      });
+      const fb = document.getElementById('fb-' + qid);
+      fb.className = 'feedback'; fb.textContent = '';
+    });
+    document.getElementById('score-' + chapterIdx).style.display = 'none';
+    document.getElementById('submit-' + chapterIdx).disabled = true;
+    document.getElementById('result-pass-' + chapterIdx).style.display = 'none';
+    document.getElementById('result-fail-' + chapterIdx).style.display = 'none';
+  }
+
+  /* ── UNLOCK ── */
+  function unlockChapter(idx) {
+    chapterUnlocked[idx] = true;
+    const navEl = document.getElementById('nav-' + idx);
+    navEl.classList.remove('locked');
+    navEl.onclick = () => showChapter(idx);
+    const iconEl = document.getElementById('icon-' + idx);
+    iconEl.classList.remove('locked-icon');
+    iconEl.textContent = idx + 1;
+    const overlay = document.getElementById('locked-overlay-' + idx);
+    const content = document.getElementById('chapter-' + idx + '-content');
+    if (overlay) overlay.style.display = 'none';
+    if (content) content.style.display = 'block';
+    updateProgress();
+    showChapter(idx);
+  }
+
+  /* ── COMPLETION ── */
+  function showCompletion() {
+    document.querySelectorAll('.chapter-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('completion-panel').style.display = 'block';
+    [0,1].forEach(i => {
+      const icon = document.getElementById('icon-' + i);
+      icon.classList.add('done');
+      icon.textContent = '✓';
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
+  }
+
+  /* ── PROGRESS ── */
+  function updateProgress() {
+    const done = chapterCompleted.filter(Boolean).length;
+    const pct = Math.round((done / chapterCompleted.length) * 100);
+    document.getElementById('header-pct').textContent = pct + '%';
+    document.getElementById('sidebar-pct').textContent = pct + '%';
+    document.getElementById('sidebar-bar').style.width = pct + '%';
+    chapterCompleted.forEach((d, i) => {
+      if (d) {
+        const icon = document.getElementById('icon-' + i);
+        if (!icon.classList.contains('done')) {
+          icon.classList.add('done');
+          icon.textContent = '✓';
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>
